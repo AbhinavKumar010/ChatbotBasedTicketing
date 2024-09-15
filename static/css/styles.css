@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #b6b9bb;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('img_museum.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    margin-top: auto;
+    max-width: 500px;
+    background-image: radial-gradient(circle, #9aa070 0%, #62aee4 100%);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #fafbfc; /* Bluish color */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.select-box {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #d9d2d2;
+}
+
+.chatbot-window {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,52,79,1) 0%, rgba(22,102,155,0.9809173669467787) 0%, rgba(71,98,116,0.633578431372549) 50%, rgba(3,135,203,1) 98%, rgb(28, 143, 201) 100%);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 300px;
+}
+
+.messages {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.message {
+    background: #b1b3ae7b; /* Bluish color for messages */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+
+.bot-message {
+    background: #4794c4; /* Same bluish color for bot messages */
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 15px;
+    background-image: radial-gradient(circle, #a0a583 0%, #56acbd 100%); /* Bluish button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1E88E5; /* Darker blue on hover */
+}
+
+.booking-section, .payment-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-image: radial-gradient(circle, #9ba386 0%, #00d4ff 100%); /* Bluish action buttons */
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.action-btn:hover {
+    background-color: #1E88E5; /* Darker blue on hover */
+}
+
+footer {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    margin-top: 20px;
+}
+/* Existing CSS... */
+
+.record-btn {
+    padding: 10px 20px;
+    background-image: radial-gradient(circle, #de8981 0%, #4a79b0 100%);
+    color: rgb(214, 109, 109);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.record-btn:hover {
+    background: #3074c1;
+    transform: scale(1.1);
+}
+
+.record-btn:active {
+    background: #b4bb6b;
+    transform: scale(0.9);
+}
+
+.record-btn::before {
+    content: '●';
+    font-size: 24px;
+    margin-right: 5px;
+    
+}
+
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
