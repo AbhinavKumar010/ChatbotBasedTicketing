@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Museum Ticket Generator</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus {
+            border-color: #5699cc;
+        }
+        button {
+            background-color: #4c89af;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #456fa0;
+        }
+        .ticket {
+            margin-top: 30px;
+            padding: 20px;
+            background: radial-gradient(circle, #b0be7b 0%, #75abc9 100%);
+            border: 2px solid #4c89af;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            text-align: center;
+            position: relative;
+        }
+        .ticket::before {
+            content: "";
+            position: absolute;
+            top: -40px; /* Adjust for logo size */
+            left: 50%;
+            width: 100px; /* Adjust for logo size */
+            height: 50px; /* Adjust for logo size */
+            transform: translateX(-50%);
+            background: url('path_to_your_logo.png') no-repeat center center;
+            background-size: contain; /* Adjust as needed */
+        }
+        .ticket img {
+            max-width: 150px; /* Adjust as needed */
+            border-radius: 50%;
+            margin: 20px 0;
+        }
+        .ticket h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 26px;
+            font-family: 'Arial Black', sans-serif;
+        }
+        .ticket p {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #34495e;
+        }
+        .barcode {
+            margin-top: 20px;
+        }
+        svg {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+        .barcode {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Secure Museum Ticket Generator</h2>
+        <form id="ticketForm">
+            <label for="visitorName">Visitor Name:</label>
+            <input type="text" id="visitorName" placeholder="Enter your name" required>
+            <span class="error" id="nameError">Please enter a valid name.</span>
+
+            <label for="ticketDate">Date of Visit:</label>
+            <input type="date" id="ticketDate" required>
+            <span class="error" id="dateError">Please select a valid date.</span>
+
+            <label for="ticketType">Ticket Type:</label>
+            <select id="ticketType" required>
+                <option value="Adult">Adult</option>
+                <option value="Child">Child</option>
+                <option value="Senior">Senior</option>
+                <option value="Student">Student</option>
+            </select>
+
+            <label for="showType">Choose Show/Event:</label>
+            <select id="showType" required>
+                <option value="Art Exhibition">Art Exhibition</option>
+                <option value="Historical Tour">Historical Tour</option>
+                <option value="Science Show">Science Show</option>
+                <option value="Planetarium">Planetarium</option>
+            </select>
+
+            <label for="gateEntry">Gate Entry:</label>
+            <select id="gateEntry" required>
+                <option value="North Gate">North Gate</option>
+                <option value="South Gate">South Gate</option>
+                <option value="East Gate">East Gate</option>
+                <option value="West Gate">West Gate</option>
+            </select>
+
+            <button type="submit">Ticket</button>
+        </form>
+
+        <div class="ticket" id="ticket">
+            <img src="logo-search-grid-1x.png" alt="logo">
+            <h3>Museum Entry Ticket</h3>
+            <p><strong>Name:</strong> <span id="ticketVisitorName"></span></p>
+            <p><strong>Date:</strong> <span id="ticketDateDisplay"></span></p>
+            <p><strong>Ticket Type:</strong> <span id="ticketTypeDisplay"></span></p>
+            <p><strong>Show/Event:</strong> <span id="showTypeDisplay"></span></p>
+            <p><strong>Gate Entry:</strong> <span id="gateEntryDisplay"></span></p>
+            
+            <div class="barcode">
+                <svg id="barcode"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- JsBarcode CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- SHA-256 for hashing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script>
+        const ticketForm = document.getElementById('ticketForm');
+        const ticket = document.getElementById('ticket');
+        const ticketVisitorName = document.getElementById('ticketVisitorName');
+        const ticketDateDisplay = document.getElementById('ticketDateDisplay');
+        const ticketTypeDisplay = document.getElementById('ticketTypeDisplay');
+        const showTypeDisplay = document.getElementById('showTypeDisplay');
+        const gateEntryDisplay = document.getElementById('gateEntryDisplay');
+
+        const nameError = document.getElementById('nameError');
+        const dateError = document.getElementById('dateError');
+
+        // Simple validation to check if input is valid
+        function validateInput(visitorName, ticketDate) {
+            let isValid = true;
+
+            if (!visitorName.match(/^[a-zA-Z ]+$/)) {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            if (!ticketDate) {
+                dateError.style.display = 'block';
+                isValid = false;
+            } else {
+                dateError.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        ticketForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const visitorName = document.getElementById('visitorName').value.trim();
+            const ticketDate = document.getElementById('ticketDate').value;
+            const ticketType = document.getElementById('ticketType').value;
+            const showType = document.getElementById('showType').value;
+            const gateEntry = document.getElementById('gateEntry').value;
+
+            // Validate the inputs
+            if (!validateInput(visitorName, ticketDate)) {
+                return;
+            }
+
+            // Set ticket details
+            ticketVisitorName.textContent = visitorName;
+            ticketDateDisplay.textContent = new Date(ticketDate).toLocaleDateString();
+            ticketTypeDisplay.textContent = ticketType;
+            showTypeDisplay.textContent = showType;
+            gateEntryDisplay.textContent = gateEntry;
+
+            // Generate a hash for barcode data for security
+            const barcodeValue = sha256(`${visitorName}-${ticketType}-${showType}-${gateEntry}-${ticketDate}`);
+        
+            JsBarcode("#barcode", barcodeValue, {
+                format: "CODE128",
+                displayValue: true,
+                fontSize: 18,
+                height: 50,
+                lineColor: "#4CAF50"
+            });
+
+            // Show ticket
+            ticket.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
